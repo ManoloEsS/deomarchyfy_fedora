@@ -73,7 +73,15 @@ if ((DRY_RUN)); then
   printf '  %s\n' "${PROTECTED_PACKAGES[@]}"
   if ((${#REMOVE_PACKAGES[@]})); then
     printf 'Candidate packages: %s\n' "${REMOVE_PACKAGES[*]}"
-    "$DNF" remove --assumeno --setopt=clean_requirements_on_remove=False "${REMOVE_PACKAGES[@]}"
+    if plan_output=$("$DNF" remove --assumeno --setopt=clean_requirements_on_remove=False "${REMOVE_PACKAGES[@]}" 2>&1); then
+      plan_status=0
+    else
+      plan_status=$?
+    fi
+    printf '%s\n' "$plan_output"
+    if ((plan_status != 0)) && [[ "$plan_output" != *'Operation aborted'* ]]; then
+      exit "$plan_status"
+    fi
   else
     printf '%s\n' 'No targeted GNOME packages are installed.'
   fi
