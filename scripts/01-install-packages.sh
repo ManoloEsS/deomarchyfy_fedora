@@ -50,7 +50,7 @@ fi
 
 ADDITIONAL_PACKAGES=(
   niri noctalia stow
-  git neovim tmux
+  git neovim tmux python3
   fzf bat eza zoxide
 )
 

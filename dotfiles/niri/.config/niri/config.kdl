@@ -61,6 +61,7 @@ layout {
 // Keep Noctalia as the only shell owner for the bar, launcher, notifications,
 // lock screen, idle behavior, wallpaper, and control center.
 spawn-at-startup "noctalia"
+spawn-at-startup "~/.config/niri/auto-column-width.py"
 
 hotkey-overlay {
     skip-at-startup

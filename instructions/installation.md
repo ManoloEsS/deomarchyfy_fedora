@@ -59,7 +59,9 @@ Enable the system baseline:
 
 Fedora Workstation normally provides zram swap through its own defaults. Verify
 it with `swapon --show` and `zramctl`; do not add a custom zram configuration
-unless the target installation is missing Fedora's default.
+unless the target installation is missing Fedora's default. For power profiles,
+the service script uses whichever compatible backend Fedora provides:
+`power-profiles-daemon` or TuneD's `tuned-ppd`. Noctalia can use either one.
 
 The script can also enable explicitly selected services:
 
@@ -71,7 +73,7 @@ The script can also enable explicitly selected services:
 Tailscale authentication remains manual:
 
 ```bash
-sudo tailscale up
+sudo tailscale up --timeout=60s
 tailscale status
 ```
 
@@ -88,6 +90,20 @@ connecting tailnet identity, while the SSH policy determines which users and
 devices may connect. If the tailnet policy has been customized, ensure it
 contains both a network access rule and an `ssh` rule; see the [Tailscale SSH
 policy documentation](https://tailscale.com/kb/1193/tailscale-ssh).
+
+If GNOME Software, Tracker, Evolution, GNOME Calendar, and GNOME Contacts are
+not needed, the optional cleanup can be reviewed and applied before configuring
+the user session:
+
+```bash
+./scripts/05-prune-gnome.sh --dry-run
+./scripts/05-prune-gnome.sh
+```
+
+This preserves polkit, GNOME Keyring, Nautilus, GVFS, desktop portals, and GDM.
+Fedora's GNOME fallback libraries for Online Accounts and Evolution Data Server
+remain installed because GNOME Shell depends on them; their background EDS
+services are masked.
 
 From another permitted device on the same tailnet, connect using the Fedora
 machine's Tailscale hostname or address:

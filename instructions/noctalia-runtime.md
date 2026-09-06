@@ -32,6 +32,21 @@ wpctl status
 systemctl --user --no-pager status pipewire wireplumber
 ```
 
+## Power Profiles
+
+Noctalia reads the standard UPower power-profile interface. Fedora may provide
+it through `power-profiles-daemon` or TuneD's `tuned-ppd` compatibility daemon:
+
+```bash
+busctl --system introspect org.freedesktop.UPower.PowerProfiles \
+  /org/freedesktop/UPower/PowerProfiles
+noctalia msg power-cycle
+```
+
+If the D-Bus service is unavailable, Noctalia continues to run but its
+power-profile control is unavailable. The Fedora power-management defaults
+should not be replaced solely to provide this optional control.
+
 ## Lock and Idle
 
 1. Press `Super+Ctrl+L` and authenticate.

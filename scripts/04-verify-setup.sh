@@ -46,20 +46,27 @@ check_link() {
 }
 
 printf 'Project: %s\n' "$PROJECT_DIR"
-for command_name in niri noctalia ghostty stow git nvim tmux xwayland-satellite; do check_command "$command_name"; done
+for command_name in niri noctalia ghostty stow git nvim tmux python3 xwayland-satellite; do check_command "$command_name"; done
 for command_name in starship mise jj herdr opencode; do warn_command "$command_name"; done
 
 printf '\nConfiguration\n'
 check_link "$HOME/.config/niri/config.kdl" "$PROJECT_DIR/dotfiles/niri/.config/niri/config.kdl"
+check_link "$HOME/.config/niri/auto-column-width.py" "$PROJECT_DIR/dotfiles/niri/.config/niri/auto-column-width.py"
 check_link "$HOME/.config/noctalia/config.toml" "$PROJECT_DIR/dotfiles/noctalia/.config/noctalia/config.toml"
 check_link "$HOME/.config/ghostty/config" "$PROJECT_DIR/dotfiles/ghostty/.config/ghostty/config"
 check_link "$HOME/.config/tmux/tmux.conf" "$PROJECT_DIR/dotfiles/tmux/.config/tmux/tmux.conf"
 check_link "$HOME/.bashrc" "$PROJECT_DIR/dotfiles/bash/.bashrc"
 
 printf '\nSystem\n'
+if rpm -q polkit >/dev/null 2>&1; then printf '%s\n' 'PASS polkit installed'; else printf '%s\n' 'FAIL polkit missing'; ((failures+=1)); fi
 if systemctl is-active --quiet firewalld.service; then printf '%s\n' 'PASS firewalld active'; else printf '%s\n' 'WARN firewalld inactive'; ((warnings+=1)); fi
 if systemctl is-active --quiet NetworkManager.service; then printf '%s\n' 'PASS NetworkManager active'; else printf '%s\n' 'WARN NetworkManager inactive'; ((warnings+=1)); fi
-if systemctl is-active --quiet power-profiles-daemon.service; then printf '%s\n' 'PASS power profiles active'; else printf '%s\n' 'WARN power profiles inactive'; ((warnings+=1)); fi
+if systemctl is-active --quiet power-profiles-daemon.service || systemctl is-active --quiet tuned-ppd.service; then
+  printf '%s\n' 'PASS power-profile backend active'
+else
+  printf '%s\n' 'WARN no active power-profile backend (Noctalia power profiles unavailable)'
+  ((warnings+=1))
+fi
 if systemctl is-enabled --quiet fstrim.timer; then printf '%s\n' 'PASS fstrim timer enabled'; else printf '%s\n' 'WARN fstrim timer not enabled'; ((warnings+=1)); fi
 
 printf '\nSession\n'

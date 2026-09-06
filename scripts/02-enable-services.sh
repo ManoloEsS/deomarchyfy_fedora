@@ -59,6 +59,17 @@ enable_unit() {
   sudo_run systemctl enable --now "$unit"
 }
 
+enable_power_profile_backend() {
+  local unit
+  for unit in power-profiles-daemon.service tuned-ppd.service; do
+    if systemctl cat "$unit" >/dev/null 2>&1; then
+      enable_unit "$unit"
+      return
+    fi
+  done
+  printf '%s\n' 'No power-profile backend found; leaving Fedora power management unchanged.'
+}
+
 if ((ENABLE_ZRAM)); then
   tmp_file="$(mktemp)"
   trap 'rm -f -- "$tmp_file"' EXIT
@@ -76,13 +87,13 @@ fi
 enable_unit NetworkManager.service
 enable_unit firewalld.service
 sudo_run firewall-cmd --set-default-zone=home
-enable_unit power-profiles-daemon.service
+enable_power_profile_backend
 enable_unit fstrim.timer
 
 if ((ENABLE_TAILSCALE)); then
   sudo_run "$DNF" install -y tailscale
   enable_unit tailscaled.service
-  printf '%s\n' 'Run "sudo tailscale up" separately to authenticate this machine.'
+  printf '%s\n' 'Run "sudo tailscale up --timeout=60s" separately to authenticate this machine.'
 fi
 
 if ((ENABLE_DOCKER)); then
@@ -106,7 +117,7 @@ if ((ENABLE_SSH)); then
       exit 1
     }
     if ! sudo tailscale status >/dev/null 2>&1; then
-      printf '%s\n' 'Tailscale is not authenticated. Run "sudo tailscale up", then rerun with --ssh.' >&2
+      printf '%s\n' 'Tailscale is not authenticated. Run "sudo tailscale up --timeout=60s", then rerun with --ssh.' >&2
       exit 1
     fi
     sudo_run tailscale set --ssh

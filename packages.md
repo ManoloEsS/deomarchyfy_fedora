@@ -25,6 +25,7 @@ Workstation desktop baseline.
 | `git` | Source control |
 | `neovim` | Default editor |
 | `tmux` | Persistent terminal sessions |
+| `python3` | Niri IPC column-width watcher |
 | `zoxide` | Directory navigation |
 
 Fedora's `niri` package already requires `xwayland-satellite`, ships
@@ -49,7 +50,7 @@ are deliberately not listed in the script:
 | `firewalld` | Fedora Workstation security baseline |
 | `NetworkManager` | Fedora Workstation network baseline |
 | `pipewire`, `wireplumber` | Fedora Workstation audio baseline |
-| `power-profiles-daemon` | Fedora Workstation power-management baseline |
+| `power-profiles-daemon`, `tuned-ppd` | Fedora power-profile backends; keep the backend provided by the target release |
 
 If a custom or stripped Fedora installation is used, check the baseline before
 starting Niri:
@@ -85,9 +86,16 @@ The helper also uses the Fedora Workstation OpenSSH client for transport. The
 Docker adds the user to a root-equivalent group and requires a new login. It is
 not enabled by default.
 
-The service script enables Fedora's existing `NetworkManager`, `firewalld`,
-`power-profiles-daemon`, and `fstrim.timer` units when requested. It does not
-install duplicate copies of those baseline packages.
+The service script enables Fedora's existing `NetworkManager`, `firewalld`, and
+`fstrim.timer` units. For power profiles it enables the first existing backend
+from `power-profiles-daemon.service` or `tuned-ppd.service`, and otherwise
+leaves Fedora's power management unchanged. It does not install duplicate
+copies of baseline packages.
+
+Noctalia uses the standard `org.freedesktop.UPower.PowerProfiles` D-Bus API.
+Both `power-profiles-daemon` and Fedora's TuneD compatibility package,
+`tuned-ppd`, provide that API. If neither backend is present, Noctalia still
+runs, but its power-profile control is unavailable.
 
 The `--ssh` option enables Tailscale SSH with `sudo tailscale set --ssh`. It does
 not install or enable `openssh-server`, modify `authorized_keys`, or change
@@ -106,6 +114,40 @@ rpm -q zram-generator-defaults
 
 The service script retains an explicit `--zram` option only for nonstandard
 Fedora installations where the distribution default is absent.
+
+## Optional GNOME Cleanup
+
+The Fedora Workstation baseline remains unchanged by default. For a Niri and
+Noctalia session that uses DNF and Flatpak directly and does not use GNOME
+Software, Tracker, Evolution, GNOME Calendar, or GNOME Contacts, review and
+run:
+
+```bash
+./scripts/05-prune-gnome.sh --dry-run
+./scripts/05-prune-gnome.sh
+```
+
+The cleanup removes installed matching packages only. It does not use a broad
+group removal or autoremove unrelated dependencies. It preserves `polkit`,
+`gnome-keyring`, the GNOME Shell/GDM fallback, Nautilus, GVFS, desktop portals,
+and Noctalia's system-service dependencies. On Fedora 44, GNOME Shell and
+GNOME Control Center require Evolution Data Server and GNOME Online Accounts
+libraries, and GNOME Online Accounts requires `gvfs-goa`, so those packages
+remain installed. Their EDS user services are masked, preventing background
+calendar/contact services while retaining the GNOME fallback libraries.
+
+PackageKit is D-Bus activated and normally inactive when GNOME Software is
+absent. If it remains installed, the cleanup masks its service to prevent
+future activation.
+
+Use `--yes` only after reviewing the dry-run and the package transaction:
+
+```bash
+./scripts/05-prune-gnome.sh --yes
+```
+
+The cleanup intentionally leaves GNOME and GDM available as a recovery
+session. Removing the entire GNOME desktop group is not supported.
 
 ## Third-Party and Upstream Tools
 

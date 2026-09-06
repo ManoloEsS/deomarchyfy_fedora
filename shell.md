@@ -28,8 +28,8 @@ launched from `.bashrc`, a user shell profile, or a second autostart mechanism.
 - Screenshot UI and system OSDs
 
 These controls still depend on the underlying Fedora services. Noctalia does
-not replace PipeWire, NetworkManager, BlueZ, UPower, or
-`power-profiles-daemon`.
+not replace PipeWire, NetworkManager, BlueZ, UPower, or the active Fedora
+power-profile backend (`power-profiles-daemon` or `tuned-ppd`).
 
 ## Minimal Profile
 

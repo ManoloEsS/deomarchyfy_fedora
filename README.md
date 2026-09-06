@@ -37,7 +37,7 @@ packages.md                   Fedora package profiles and sources
 instructions/installation.md  End-to-end setup
 instructions/niri.md          Niri configuration and feature mapping
 instructions/noctalia-runtime.md  Manual runtime and recovery checks
-scripts/                      Package, service, Stow, and verification scripts
+scripts/                      Package, service, cleanup, Stow, and verification scripts
 dotfiles/bash/                Bash, aliases, functions, and input configuration
 dotfiles/niri/                Niri KDL configuration
 dotfiles/noctalia/            Reviewed Noctalia configuration
