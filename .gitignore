@@ -1,0 +1,3 @@
+# Runtime and local backup data must remain outside version control.
+.local/
+*.log
