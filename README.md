@@ -52,7 +52,7 @@ Run the scripts as the normal user from this directory:
 ```bash
 ./scripts/01-install-packages.sh
 ./scripts/02-enable-services.sh
-./scripts/03-stow-configs.sh --replace-bash
+./scripts/03-stow-configs.sh --replace-bash --replace-niri
 ./scripts/04-verify-setup.sh
 ```
 
@@ -72,7 +72,8 @@ generated files. The verification script is read-only.
 - Do not enable SSH or Tailscale just because their packages are installed. For
   remote access, authenticate Tailscale first and use `--ssh` to enable
   Tailscale SSH; tailnet policy controls access.
-- Keep existing regular dotfiles unless `--replace-bash` is explicitly used.
+- Keep existing regular dotfiles unless the matching `--replace-*` option is
+  explicitly used.
 
 ## Status
 

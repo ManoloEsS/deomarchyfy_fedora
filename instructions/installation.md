@@ -107,12 +107,13 @@ Inspect the Stow plan first:
 On a clean user account, apply all reviewed packages:
 
 ```bash
-./scripts/03-stow-configs.sh --replace-bash
+./scripts/03-stow-configs.sh --replace-bash --replace-niri
 ```
 
 `--replace-bash` moves existing regular Bash files into a timestamped backup
-directory under `~/.local/state/deomarchyfy-fedora/backups/`. Other conflicts
-stop the script rather than overwriting user files.
+directory under `~/.local/state/deomarchyfy-fedora/backups/`. Likewise,
+`--replace-niri` backs up an existing regular `~/.config/niri/config.kdl` there.
+Symlinks and other conflicts stop the script rather than overwriting user files.
 
 ## 6. Validate Before Login Selection
 
