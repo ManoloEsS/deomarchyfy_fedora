@@ -70,7 +70,8 @@ fi
 if systemctl is-enabled --quiet fstrim.timer; then printf '%s\n' 'PASS fstrim timer enabled'; else printf '%s\n' 'WARN fstrim timer not enabled'; ((warnings+=1)); fi
 
 printf '\nSession\n'
-if [[ "${XDG_CURRENT_DESKTOP:-}" == *niri* || -n "${NIRI_SOCKET:-}" ]]; then
+if [[ "${XDG_CURRENT_DESKTOP:-}" == *niri* || -n "${NIRI_SOCKET:-}" ]] ||
+   systemctl --user is-active --quiet niri.service 2>/dev/null; then
   printf '%s\n' 'PASS Niri session detected'
 else
   printf '%s\n' 'WARN Niri session not detected; run this from the graphical session'
