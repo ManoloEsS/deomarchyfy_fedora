@@ -2,25 +2,28 @@
 set -Eeuo pipefail
 
 DRY_RUN=0
+REMOVE_PACKAGES=0
 ASSUME_YES=0
 
 usage() {
   cat <<'EOF'
 Usage: 05-prune-gnome.sh [options]
 
-Remove unused GNOME software-management, indexing, and GUI components while
-preserving the GNOME fallback, polkit, Noctalia, Nautilus, portals, and GVFS.
+Stop unused GNOME background services while preserving GNOME applications,
+polkit, the GNOME fallback, Noctalia, Nautilus, portals, and GVFS.
 
 Options:
-  --dry-run        Show the package transaction without changing the system.
-  --yes            Accept the package transaction without prompting.
-  -h, --help       Show this help.
+  --dry-run         Show the service and package plan without changing the system.
+  --remove-packages Opt in to removing the unused GNOME packages as well.
+  --yes             Accept the optional package-removal transaction without prompting.
+  -h, --help        Show this help.
 EOF
 }
 
 while (($#)); do
   case "$1" in
     --dry-run) DRY_RUN=1 ;;
+    --remove-packages) REMOVE_PACKAGES=1 ;;
     --yes) ASSUME_YES=1 ;;
     -h|--help) usage; exit 0 ;;
     *) printf 'Unknown option: %s\n' "$1" >&2; usage >&2; exit 2 ;;
@@ -48,6 +51,16 @@ readonly PROTECTED_PACKAGES=(
   gdm gnome-shell gnome-control-center
 )
 
+readonly USER_SERVICE_PATTERNS=(
+  evolution-source-registry.service
+  evolution-calendar-factory.service
+  evolution-addressbook-factory.service
+  evolution-user-prompter.service
+  evolution-alarm-notify.service
+  tracker-miner-fs-3.service
+  tracker-extract-3.service
+)
+
 for package in "${PROTECTED_PACKAGES[@]}"; do
   rpm -q "$package" >/dev/null 2>&1 || {
     printf 'Required protected package is missing: %s\n' "$package" >&2
@@ -55,7 +68,7 @@ for package in "${PROTECTED_PACKAGES[@]}"; do
   }
 done
 
-mapfile -t REMOVE_PACKAGES < <(
+mapfile -t PRUNABLE_PACKAGES < <(
   rpm -qa --qf '%{NAME}\n' |
     while IFS= read -r package; do
       case "$package" in
@@ -68,43 +81,57 @@ mapfile -t REMOVE_PACKAGES < <(
     sort -u
 )
 
+show_package_plan() {
+  if ((${#PRUNABLE_PACKAGES[@]} == 0)); then
+    printf '%s\n' 'No targeted GNOME packages are installed.'
+    return
+  fi
+
+  printf 'Candidate packages: %s\n' "${PRUNABLE_PACKAGES[*]}"
+  if package_plan=$("$DNF" remove --assumeno --setopt=clean_requirements_on_remove=False "${PRUNABLE_PACKAGES[@]}" 2>&1); then
+    plan_status=0
+  else
+    plan_status=$?
+  fi
+  printf '%s\n' "$package_plan"
+  if ((plan_status != 0)) && [[ "$package_plan" != *'Operation aborted'* ]]; then
+    return "$plan_status"
+  fi
+}
+
 if ((DRY_RUN)); then
   printf '%s\n' 'Protected packages:'
   printf '  %s\n' "${PROTECTED_PACKAGES[@]}"
-  if ((${#REMOVE_PACKAGES[@]})); then
-    printf 'Candidate packages: %s\n' "${REMOVE_PACKAGES[*]}"
-    if plan_output=$("$DNF" remove --assumeno --setopt=clean_requirements_on_remove=False "${REMOVE_PACKAGES[@]}" 2>&1); then
-      plan_status=0
-    else
-      plan_status=$?
-    fi
-    printf '%s\n' "$plan_output"
-    if ((plan_status != 0)) && [[ "$plan_output" != *'Operation aborted'* ]]; then
-      exit "$plan_status"
-    fi
+  printf '%s\n' 'PackageKit will be stopped only if active and remains available for on-demand GNOME Software use.'
+  printf '%s\n' 'EDS and Tracker user services will be masked when present.'
+  if ((REMOVE_PACKAGES)); then
+    show_package_plan
   else
-    printf '%s\n' 'No targeted GNOME packages are installed.'
+    printf '%s\n' 'Package removal is disabled; applications remain installed.'
   fi
-  printf '%s\n' 'PackageKit will be masked only if it remains installed after removal.'
-  printf '%s\n' 'Evolution Data Server services will be masked while their GNOME fallback libraries remain installed.'
   exit 0
 fi
 
 sudo -v
 
-if ((${#REMOVE_PACKAGES[@]})); then
-  dnf_args=(remove --setopt=clean_requirements_on_remove=False)
-  ((ASSUME_YES)) && dnf_args+=(-y)
-  sudo "$DNF" "${dnf_args[@]}" "${REMOVE_PACKAGES[@]}"
-else
-  printf '%s\n' 'No targeted GNOME packages are installed.'
+if ((REMOVE_PACKAGES)); then
+  if ((${#PRUNABLE_PACKAGES[@]})); then
+    dnf_args=(remove --setopt=clean_requirements_on_remove=False)
+    ((ASSUME_YES)) && dnf_args+=(-y)
+    sudo "$DNF" "${dnf_args[@]}" "${PRUNABLE_PACKAGES[@]}"
+  else
+    printf '%s\n' 'No targeted GNOME packages are installed.'
+  fi
+elif ((ASSUME_YES)); then
+  printf '%s\n' '--yes only applies with --remove-packages.' >&2
+  exit 2
 fi
 
-if rpm -q PackageKit >/dev/null 2>&1; then
-  sudo systemctl mask --now packagekit.service
-  printf '%s\n' 'PackageKit remains installed and is now masked.'
+if systemctl is-active --quiet packagekit.service; then
+  sudo systemctl stop packagekit.service
+  printf '%s\n' 'Stopped active PackageKit; it remains available for on-demand GNOME Software use.'
 else
-  printf '%s\n' 'PackageKit is not installed; no PackageKit service remains to mask.'
+  printf '%s\n' 'PackageKit is inactive; left available for on-demand GNOME Software use.'
 fi
 
 if [[ -z "${DBUS_SESSION_BUS_ADDRESS:-}" && -S "/run/user/$(id -u)/bus" ]]; then
@@ -113,18 +140,19 @@ if [[ -z "${DBUS_SESSION_BUS_ADDRESS:-}" && -S "/run/user/$(id -u)/bus" ]]; then
 fi
 
 if [[ -n "${DBUS_SESSION_BUS_ADDRESS:-}" ]]; then
-  for unit in \
-    evolution-source-registry.service \
-    evolution-calendar-factory.service \
-    evolution-addressbook-factory.service \
-    evolution-user-prompter.service \
-    evolution-alarm-notify.service; do
+  for unit in "${USER_SERVICE_PATTERNS[@]}"; do
     if systemctl --user cat "$unit" >/dev/null 2>&1; then
       systemctl --user mask --now "$unit"
+      printf 'Masked user service: %s\n' "$unit"
     fi
   done
+
+  if pgrep -x goa-daemon >/dev/null 2>&1; then
+    pkill -x goa-daemon
+    printf '%s\n' 'Stopped active GNOME Online Accounts daemon; it remains available for on-demand use.'
+  fi
 else
-  printf '%s\n' 'No user D-Bus session detected; run the script again from the graphical session to mask EDS services.'
+  printf '%s\n' 'No user D-Bus session detected; run this script again from the graphical session to mask user services.'
 fi
 
 for package in "${PROTECTED_PACKAGES[@]}"; do
@@ -134,4 +162,4 @@ for package in "${PROTECTED_PACKAGES[@]}"; do
   }
 done
 
-printf '%s\n' 'GNOME cleanup complete; polkit, GNOME fallback dependencies, Noctalia dependencies, Nautilus, portals, and GVFS were preserved.'
+printf '%s\n' 'GNOME service cleanup complete; applications and polkit were preserved.'

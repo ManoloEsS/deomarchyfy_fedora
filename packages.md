@@ -115,30 +115,41 @@ rpm -q zram-generator-defaults
 The service script retains an explicit `--zram` option only for nonstandard
 Fedora installations where the distribution default is absent.
 
-## Optional GNOME Cleanup
+## Optional GNOME Service Cleanup
 
 The Fedora Workstation baseline remains unchanged by default. For a Niri and
-Noctalia session that uses DNF and Flatpak directly and does not use GNOME
-Software, Tracker, Evolution, GNOME Calendar, or GNOME Contacts, review and
-run:
+Noctalia session that does not need background Tracker, Evolution Data Server,
+or Online Accounts activity, review and run:
 
 ```bash
 ./scripts/05-prune-gnome.sh --dry-run
 ./scripts/05-prune-gnome.sh
 ```
 
-The cleanup removes installed matching packages only. It does not use a broad
-group removal or autoremove unrelated dependencies. It preserves `polkit`,
-`gnome-keyring`, the GNOME Shell/GDM fallback, Nautilus, GVFS, desktop portals,
-and Noctalia's system-service dependencies. On Fedora 44, GNOME Shell and
-GNOME Control Center require Evolution Data Server and GNOME Online Accounts
-libraries, and GNOME Online Accounts requires `gvfs-goa`, so those packages
-remain installed. Their EDS user services are masked, preventing background
-calendar/contact services while retaining the GNOME fallback libraries.
+The default mode leaves applications and packages installed. It masks EDS and
+Tracker user services when present, stops an active GNOME Online Accounts
+daemon, and stops PackageKit only when it is currently active. PackageKit and
+Online Accounts remain available for on-demand use, so GNOME Software still
+works when opened.
 
-PackageKit is D-Bus activated and normally inactive when GNOME Software is
-absent. If it remains installed, the cleanup masks its service to prevent
-future activation.
+On Fedora 44, GNOME Shell and GNOME Control Center require Evolution Data Server
+and GNOME Online Accounts libraries, and GNOME Online Accounts requires
+`gvfs-goa`; those packages must remain installed to preserve the GNOME fallback.
+The service cleanup preserves `polkit`, `gnome-keyring`, the GNOME Shell/GDM
+fallback, Nautilus, GVFS, desktop portals, and Noctalia's system-service
+dependencies.
+
+PackageKit is D-Bus activated and normally inactive. It is intentionally not
+masked because doing so would break GNOME Software's RPM functionality.
+
+If disk cleanup is wanted later, package removal is explicitly opt-in:
+
+```bash
+./scripts/05-prune-gnome.sh --remove-packages
+```
+
+This may also remove dependent GUI applications such as Simple Scan. Review
+the transaction before accepting it.
 
 Use `--yes` only after reviewing the dry-run and the package transaction:
 

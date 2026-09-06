@@ -91,19 +91,19 @@ devices may connect. If the tailnet policy has been customized, ensure it
 contains both a network access rule and an `ssh` rule; see the [Tailscale SSH
 policy documentation](https://tailscale.com/kb/1193/tailscale-ssh).
 
-If GNOME Software, Tracker, Evolution, GNOME Calendar, and GNOME Contacts are
-not needed, the optional cleanup can be reviewed and applied before configuring
-the user session:
+If background Tracker and Evolution Data Server services are not needed, the
+optional service cleanup can be reviewed and applied before configuring the
+user session:
 
 ```bash
 ./scripts/05-prune-gnome.sh --dry-run
 ./scripts/05-prune-gnome.sh
 ```
 
-This preserves polkit, GNOME Keyring, Nautilus, GVFS, desktop portals, and GDM.
-Fedora's GNOME fallback libraries for Online Accounts and Evolution Data Server
-remain installed because GNOME Shell depends on them; their background EDS
-services are masked.
+This leaves GNOME applications installed, preserves polkit, GNOME Keyring,
+Nautilus, GVFS, desktop portals, and GDM, and masks background EDS and Tracker
+services when present. Fedora's GNOME fallback libraries for Online Accounts and
+Evolution Data Server remain installed because GNOME Shell depends on them.
 
 From another permitted device on the same tailnet, connect using the Fedora
 machine's Tailscale hostname or address:
