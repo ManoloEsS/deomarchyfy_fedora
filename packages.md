@@ -26,6 +26,8 @@ Workstation desktop baseline.
 | `neovim` | Default editor |
 | `tmux` | Persistent terminal sessions |
 | `python3` | Niri IPC column-width watcher |
+| `fontconfig` | Font discovery and cache tools |
+| `JetBrainsMono Nerd Font` | Omarchy-compatible terminal font with patched symbols |
 | `zoxide` | Directory navigation |
 
 Fedora's `niri` package already requires `xwayland-satellite`, ships
@@ -45,7 +47,7 @@ are deliberately not listed in the script:
 | `nautilus` | Fedora GNOME desktop baseline; file manager and file chooser support |
 | `bash-completion` | Fedora Workstation shell baseline; `.bashrc` loads it when present |
 | `ca-certificates` | Fedora base trust store |
-| `curl-minimal` | Fedora base provides the `curl` command; not used by the scripts |
+| `curl-minimal` | Fedora base provides the `curl` command used by the font installer |
 | `openssh-clients` | Fedora Workstation normally provides `ssh` and `scp` |
 | `firewalld` | Fedora Workstation security baseline |
 | `NetworkManager` | Fedora Workstation network baseline |
@@ -182,6 +184,13 @@ dnf copr info atim/starship
 
 The script installs `dnf5-plugins` when Fedora uses DNF5, or
 `dnf-plugins-core` with the older DNF command, before enabling a COPR.
+
+Omarchy's Arch package `ttf-jetbrains-mono-nerd` has no Fedora package
+equivalent in the target repositories. The package script therefore downloads
+the pinned `JetBrainsMono.tar.xz` release from the official Nerd Fonts project,
+verifies its SHA-256 digest, installs it under `~/.local/share/fonts/`, and
+refreshes the user font cache. Ghostty's `JetBrainsMono Nerd Font` setting then
+resolves to the intended font rather than a fallback.
 
 ## Not Included
 

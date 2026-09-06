@@ -46,7 +46,7 @@ check_link() {
 }
 
 printf 'Project: %s\n' "$PROJECT_DIR"
-for command_name in niri noctalia ghostty stow git nvim tmux python3 xwayland-satellite; do check_command "$command_name"; done
+for command_name in niri noctalia ghostty stow git nvim tmux python3 fc-match xwayland-satellite; do check_command "$command_name"; done
 for command_name in starship mise jj herdr opencode; do warn_command "$command_name"; done
 
 printf '\nConfiguration\n'
@@ -56,6 +56,12 @@ check_link "$HOME/.config/noctalia/config.toml" "$PROJECT_DIR/dotfiles/noctalia/
 check_link "$HOME/.config/ghostty/config" "$PROJECT_DIR/dotfiles/ghostty/.config/ghostty/config"
 check_link "$HOME/.config/tmux/tmux.conf" "$PROJECT_DIR/dotfiles/tmux/.config/tmux/tmux.conf"
 check_link "$HOME/.bashrc" "$PROJECT_DIR/dotfiles/bash/.bashrc"
+if [[ "$(fc-match -f '%{family}' 'JetBrainsMono Nerd Font' 2>/dev/null)" == *'JetBrainsMono Nerd Font'* ]]; then
+  printf '%s\n' 'PASS JetBrainsMono Nerd Font available'
+else
+  printf '%s\n' 'FAIL JetBrainsMono Nerd Font missing'
+  ((failures+=1))
+fi
 
 printf '\nSystem\n'
 if rpm -q polkit >/dev/null 2>&1; then printf '%s\n' 'PASS polkit installed'; else printf '%s\n' 'FAIL polkit missing'; ((failures+=1)); fi

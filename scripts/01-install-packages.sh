@@ -10,6 +10,11 @@ WITH_STARSHIP=0
 WITH_SYNC_TOOLS=0
 NO_UPGRADE=0
 
+readonly NERD_FONT_VERSION='v3.5.1'
+readonly NERD_FONT_URL="https://github.com/ryanoasis/nerd-fonts/releases/download/${NERD_FONT_VERSION}/JetBrainsMono.tar.xz"
+readonly NERD_FONT_SHA256='04d5e8f903693f9dd13e16f867e994834e681eb3c72c0d337a770dcda09010cf'
+readonly NERD_FONT_DIR="${HOME}/.local/share/fonts/JetBrainsMono Nerd Font"
+
 usage() {
   cat <<'EOF'
 Usage: 01-install-packages.sh [options]
@@ -50,7 +55,7 @@ fi
 
 ADDITIONAL_PACKAGES=(
   niri noctalia stow
-  git neovim tmux python3
+  git neovim tmux python3 fontconfig
   fzf bat eza zoxide
 )
 
@@ -63,6 +68,32 @@ run_dnf() {
   else
     sudo "$DNF" "${args[@]}"
   fi
+}
+
+install_jetbrains_nerd_font() {
+  if ((DRY_RUN)); then
+    printf '+ install JetBrainsMono Nerd Font %s into %q\n' "$NERD_FONT_VERSION" "$NERD_FONT_DIR"
+    return
+  fi
+
+  if [[ "$(fc-match -f '%{family}' 'JetBrainsMono Nerd Font' 2>/dev/null)" == *'JetBrainsMono Nerd Font'* ]]; then
+    printf '%s\n' 'JetBrainsMono Nerd Font is already installed.'
+    return
+  fi
+
+  (
+    temp_dir="$(mktemp -d)"
+    trap 'rm -rf -- "$temp_dir"' EXIT
+    archive="${temp_dir}/JetBrainsMono.tar.xz"
+
+    curl --fail --location --retry 3 --silent --show-error "$NERD_FONT_URL" --output "$archive"
+    printf '%s  %s\n' "$NERD_FONT_SHA256" "$archive" | sha256sum --check --status
+    mkdir -p "$NERD_FONT_DIR"
+    tar --extract --xz --file="$archive" --directory="$NERD_FONT_DIR"
+  )
+
+  fc-cache -f "$NERD_FONT_DIR"
+  printf 'Installed JetBrainsMono Nerd Font %s.\n' "$NERD_FONT_VERSION"
 }
 
 enable_copr() {
@@ -111,3 +142,4 @@ fi
 
 printf 'Installing Fedora packages from %s:\n' "$PROJECT_DIR"
 run_dnf install -y "${ADDITIONAL_PACKAGES[@]}"
+install_jetbrains_nerd_font
