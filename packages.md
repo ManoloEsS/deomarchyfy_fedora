@@ -29,10 +29,37 @@ Workstation desktop baseline.
 | `fontconfig` | Font discovery and cache tools |
 | `JetBrainsMono Nerd Font` | Omarchy-compatible terminal font with patched symbols |
 | `zoxide` | Directory navigation |
+| `wtype` | Universal copy/paste/cut key emission for Wayland |
 
 Fedora's `niri` package already requires `xwayland-satellite`, ships
 `niri-portals.conf`, and provides the GDM-visible Wayland session entry. Those
 items are not duplicated in the script.
+
+## Reference Machine Additions
+
+The reference Fedora machine used to develop this project has these additional
+packages installed. They are not all part of the core profile:
+
+| Package | Reference-machine path / reproducible project path | Role |
+| --- | --- | --- |
+| `wtype` | Installed separately during testing; now included by the core installer | Emits Wayland key events for universal copy/paste/cut |
+| `starship` | Installed with the initial profile; reproduce with `./scripts/01-install-packages.sh --with-starship` | Optional Bash prompt |
+| `rsync` | Present from initial dependency resolution; reproduce with `./scripts/01-install-packages.sh --with-sync-tools` | Optional `rsw` directory synchronization |
+| `inotify-tools` | Present from initial dependency resolution; reproduce with `./scripts/01-install-packages.sh --with-sync-tools` | Watches directories for `rsw` |
+| `tailscale` | Installed separately; `./scripts/02-enable-services.sh --tailscale` installs and enables it | Optional private network access |
+| `gh` | Manual Fedora package install | GitHub CLI; not needed by the desktop setup |
+| `mise` | Manual Fedora package install | Optional development tool version manager |
+| `jj-cli` | Manual Fedora package install | Optional Jujutsu version control client |
+| `zen-browser` | Manual package install | Optional browser; not a session dependency |
+
+The core installer remains limited to packages required by the reviewed Niri,
+Noctalia, Ghostty, shell, and Stow configuration. The optional packages above
+are documented so a package audit of the reference machine does not make them
+look like hidden core dependencies.
+
+The Fedora dependency solver may also install weak dependencies of desktop
+packages, such as `waybar`, `fuzzel`, or `swaylock`. This project does not
+configure or rely on them; Noctalia owns those desktop-shell responsibilities.
 
 ## Fedora Workstation Baseline
 
@@ -169,7 +196,7 @@ session. Removing the entire GNOME desktop group is not supported.
 | Ghostty | COPR `scottames/ghostty` | Enabled by the package script unless `--no-ghostty` is used |
 | Starship | COPR `atim/starship` | Optional; use `--with-starship` |
 | mise | Fedora package or upstream | Optional and not required by the base setup |
-| Jujutsu | Fedora package or upstream | Optional developer tool |
+| Jujutsu | Fedora package `jj-cli` or upstream | Optional developer tool |
 | Herdr | Upstream installer/release | Configuration is included, installation is separate |
 | OpenCode | Current upstream source | Distribution channel may change |
 

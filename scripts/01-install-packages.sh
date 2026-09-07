@@ -56,7 +56,8 @@ fi
 ADDITIONAL_PACKAGES=(
   niri noctalia stow
   git neovim tmux python3 fontconfig
-  fzf bat eza zoxide
+  # Required by the Niri universal-clipboard helper.
+  fzf bat eza zoxide wtype
 )
 
 run_dnf() {

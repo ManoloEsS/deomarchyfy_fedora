@@ -37,7 +37,7 @@ Optional developer tools are separate from the desktop core:
 
 ```bash
 ./scripts/01-install-packages.sh --with-starship
-sudo dnf install mise jj
+sudo dnf install gh mise jj-cli
 ```
 
 The optional `rsw` live-directory synchronization helper requires extra tools:
@@ -156,6 +156,10 @@ Confirm that:
 - `Super+F` maximizes a column and `Super+Shift+F` fullscreen a window.
 - Volume, brightness, media, lock, and screenshot keys work.
 - Both monitors and the assigned workspaces behave as expected.
+- `niri msg outputs` reports Acer `3440x1440@119.998` and Samsung
+  `1920x1080@74.973`, both at scale `1`.
+- Text is sharp on both native-resolution outputs and the portrait display has
+  no clipping or unexpected scaling.
 
 ## 8. Recovery
 

@@ -9,8 +9,8 @@ if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
   cat <<'EOF'
 Usage: 04-verify-setup.sh
 
-Read-only checks for the Fedora package, configuration, service, and session
-baseline. Run it from the target graphical session after Stow is applied.
+Read-only checks for the Fedora package, configuration, service, monitor, and
+session baseline. Run it from the target graphical session after Stow is applied.
 EOF
   exit 0
 fi
@@ -45,8 +45,59 @@ check_link() {
   fi
 }
 
+output_block() {
+  local connector="$1" line block='' in_block=0
+  while IFS= read -r line; do
+    if [[ "$line" == *"(${connector})" ]]; then
+      in_block=1
+      block="$line"
+      continue
+    fi
+    if ((in_block)) && [[ "$line" == Output\ * ]]; then
+      break
+    fi
+    if ((in_block)); then
+      block+=$'\n'"$line"
+    fi
+  done <<<"$outputs"
+  printf '%s' "$block"
+}
+
+check_reference_outputs() {
+  local acer samsung
+  if ! outputs="$(niri msg outputs 2>/dev/null)"; then
+    printf '%s\n' 'WARN monitor state unavailable from niri msg outputs'
+    ((warnings+=1))
+    return
+  fi
+
+  acer="$(output_block DP-1)"
+  samsung="$(output_block HDMI-A-1)"
+
+  if [[ "$acer" == *'Acer Technologies ED340CU'* &&
+        "$acer" == *'Current mode: 3440x1440 @ 119.998 Hz'* &&
+        "$acer" == *'Logical position: 0, 0'* &&
+        "$acer" == *'Scale: 1'* ]]; then
+    printf '%s\n' 'PASS Acer monitor reference mode'
+  else
+    printf '%s\n' 'WARN Acer reference mode differs; review niri msg outputs'
+    ((warnings+=1))
+  fi
+
+  if [[ "$samsung" == *'Samsung Electric Company'* &&
+        "$samsung" == *'Current mode: 1920x1080 @ 74.973 Hz'* &&
+        "$samsung" == *'Logical position: -1080, 0'* &&
+        "$samsung" == *'Scale: 1'* &&
+        "$samsung" == *'Transform: 90'* ]]; then
+    printf '%s\n' 'PASS Samsung monitor reference mode'
+  else
+    printf '%s\n' 'WARN Samsung reference mode differs; review niri msg outputs'
+    ((warnings+=1))
+  fi
+}
+
 printf 'Project: %s\n' "$PROJECT_DIR"
-for command_name in niri noctalia ghostty stow git nvim tmux python3 fc-match xwayland-satellite; do check_command "$command_name"; done
+for command_name in niri noctalia ghostty stow git nvim tmux python3 fc-match xwayland-satellite wtype; do check_command "$command_name"; done
 for command_name in starship mise jj herdr opencode; do warn_command "$command_name"; done
 
 printf '\nConfiguration\n'
@@ -76,12 +127,18 @@ fi
 if systemctl is-enabled --quiet fstrim.timer; then printf '%s\n' 'PASS fstrim timer enabled'; else printf '%s\n' 'WARN fstrim timer not enabled'; ((warnings+=1)); fi
 
 printf '\nSession\n'
+niri_session=0
 if [[ "${XDG_CURRENT_DESKTOP:-}" == *niri* || -n "${NIRI_SOCKET:-}" ]] ||
    systemctl --user is-active --quiet niri.service 2>/dev/null; then
   printf '%s\n' 'PASS Niri session detected'
+  niri_session=1
 else
   printf '%s\n' 'WARN Niri session not detected; run this from the graphical session'
   ((warnings+=1))
+fi
+
+if ((niri_session)); then
+  check_reference_outputs
 fi
 
 if ((failures)); then

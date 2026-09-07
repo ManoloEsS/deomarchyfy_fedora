@@ -33,7 +33,9 @@ def workspace_columns(windows: dict[int, dict], workspace_id: int) -> set[int]:
     }
 
 
-def apply_layout(windows: dict[int, dict], workspace_id: int, last_counts: dict[int, int]) -> None:
+def apply_layout(
+    windows: dict[int, dict], workspace_id: int, last_counts: dict[int, int]
+) -> None:
     columns = workspace_columns(windows, workspace_id)
     count = len(columns)
     previous_count = last_counts.get(workspace_id)
@@ -49,14 +51,15 @@ def apply_layout(windows: dict[int, dict], workspace_id: int, last_counts: dict[
             (
                 column_position(window)
                 for window in windows.values()
-                if window.get("workspace_id") == workspace_id and window.get("is_focused")
+                if window.get("workspace_id") == workspace_id
+                and window.get("is_focused")
             ),
             2,
         )
         run_action("focus-column-first")
-        run_action("set-column-width", "50%")
+        run_action("set-column-width", "49%")
         run_action("focus-column-last")
-        run_action("set-column-width", "50%")
+        run_action("set-column-width", "49%")
         run_action("focus-column-first" if focused_column == 1 else "focus-column-last")
 
 
@@ -72,7 +75,10 @@ def main() -> int:
             text=True,
         )
     except OSError as error:
-        print(f"auto-column-width: unable to start niri event stream: {error}", file=sys.stderr)
+        print(
+            f"auto-column-width: unable to start niri event stream: {error}",
+            file=sys.stderr,
+        )
         return 1
 
     assert stream.stdout is not None
@@ -85,7 +91,11 @@ def main() -> int:
 
         if name == "WorkspacesChanged":
             focused_workspace = next(
-                (workspace["id"] for workspace in payload["workspaces"] if workspace.get("is_focused")),
+                (
+                    workspace["id"]
+                    for workspace in payload["workspaces"]
+                    if workspace.get("is_focused")
+                ),
                 focused_workspace,
             )
             if focused_workspace is not None:
@@ -108,13 +118,18 @@ def main() -> int:
                     existing["is_focused"] = False
             windows[window["id"]] = window
             if focused_workspace is not None and (
-                old_workspace == focused_workspace or window.get("workspace_id") == focused_workspace
+                old_workspace == focused_workspace
+                or window.get("workspace_id") == focused_workspace
             ):
                 time.sleep(0.05)
                 apply_layout(windows, focused_workspace, last_counts)
         elif name == "WindowClosed":
             closed_window = windows.pop(payload["id"], None)
-            if focused_workspace is not None and closed_window and closed_window.get("workspace_id") == focused_workspace:
+            if (
+                focused_workspace is not None
+                and closed_window
+                and closed_window.get("workspace_id") == focused_workspace
+            ):
                 time.sleep(0.05)
                 apply_layout(windows, focused_workspace, last_counts)
         elif name == "WindowFocusChanged":

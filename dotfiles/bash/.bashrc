@@ -56,8 +56,11 @@ fi
 
 if command -v fzf >/dev/null 2>&1; then
   [[ -f /usr/share/fzf/completion.bash ]] && source /usr/share/fzf/completion.bash
-  [[ -f /usr/share/fzf/key-bindings.bash ]] && source /usr/share/fzf/key-bindings.bash
+  [[ -f /usr/share/fzf/shell/key-bindings.bash ]] && source /usr/share/fzf/shell/key-bindings.bash
 fi
 
 [[ -r "${HOME}/.bash_aliases" ]] && source "${HOME}/.bash_aliases"
 [[ -r "${HOME}/.bash_functions" ]] && source "${HOME}/.bash_functions"
+
+# opencode
+export PATH=/home/manoloess/.opencode/bin:$PATH

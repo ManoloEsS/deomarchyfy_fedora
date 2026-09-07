@@ -29,7 +29,8 @@ keybind = alt+shift+enter=csi:13;4u
 
 # Input and rendering
 mouse-scroll-multiplier = 0.95
-background-opacity = 0.89
+background-opacity = 0.95
+background-blur = true
 async-backend = epoll
 
 # Static Tokyo Night colors.

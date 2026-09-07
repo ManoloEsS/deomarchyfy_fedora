@@ -77,8 +77,11 @@ generated files. The verification script is read-only.
 
 ## Status
 
-The initial Fedora project includes the package profiles, service baseline,
-portable dotfiles, a first Niri configuration, installation documentation, and
-read-only validation. Hardware-specific output names and runtime behavior must
-still be verified on the target machine with `niri msg outputs`, Noctalia's
-configuration validator, and a real GDM login.
+The Fedora project includes the package profiles, service baseline, portable
+dotfiles, Niri and Noctalia configuration, installation documentation, and
+read-only validation. The reference machine has been verified in a real Niri
+session with native-resolution output rules: the Acer runs at
+`3440x1440@119.998` and the portrait Samsung runs at `1920x1080@74.973`, both
+at scale `1`. Hardware-specific output names and runtime behavior must still be
+checked when reusing the project on another machine with `niri msg outputs`,
+Noctalia's configuration validator, and a real GDM login.
