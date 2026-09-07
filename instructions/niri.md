@@ -26,7 +26,7 @@ existing columns when the column count changes.
 | --- | --- |
 | Hyprland scrolling layout | Niri's native scrolling columns |
 | Gaps and active gradient border | Niri layout gaps and cyan/green focus ring |
-| Workspace monitor rules | Named workspaces with `open-on-output` |
+| Workspace monitor rules | Niri dynamically manages workspaces across outputs |
 | Hyprland startup hook | `spawn-at-startup "noctalia"` |
 | `hyprctl` terminal helper | Direct Ghostty/foot launcher |
 | Focus and move directions | Niri focus/move column/window actions |
@@ -45,15 +45,15 @@ quick view of all workspaces and windows.
 
 ## Monitor Defaults
 
-The current hardware mapping is:
+The target hardware mapping is:
 
-- Acer ED340CU at `0x0`
-- Samsung LF24T35 at `-1080x0`, rotated 90 degrees
-- Workspace 1 opens on Samsung
-- Workspace 2 opens on Acer
+- Acer ED340CU at `0x0`, using its preferred mode and refresh rate
+- Samsung LF24T35 at `-1080x0`, rotated 90 degrees, using its preferred mode and refresh rate
 
-If a monitor does not match, comment out the corresponding `output` block and
-use Niri's automatic placement until the exact identifier is confirmed.
+The output blocks set only placement and rotation. Niri still selects each
+monitor's preferred mode and refresh rate, while leaving scale at its default.
+If this configuration is reused on different hardware, inspect identifiers with
+`niri msg outputs` and replace the two hardware-specific output names.
 
 ## Useful Commands
 

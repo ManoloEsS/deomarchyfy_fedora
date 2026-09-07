@@ -32,7 +32,7 @@ fi
 [[ $- != *i* ]] && return
 
 shopt -s histappend
-HISTCONTROL="ignoreboth"
+HISTCONTROL="ignoredups"
 HISTSIZE=32768
 HISTFILESIZE="${HISTSIZE}"
 

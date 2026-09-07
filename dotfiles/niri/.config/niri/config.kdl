@@ -17,7 +17,7 @@ input {
 }
 
 // The Acer is the primary landscape display. The Samsung is the portrait
-// display to its left, matching the current Hyprland layout.
+// display to its left, matching the target hardware layout.
 output "Acer Technologies ED340CU J0 54520961D3W01" {
     position x=0 y=0
 }
@@ -25,14 +25,6 @@ output "Acer Technologies ED340CU J0 54520961D3W01" {
 output "Samsung Electric Company LF24T35 HCNR501668" {
     position x=-1080 y=0
     transform "90"
-}
-
-workspace "1" {
-    open-on-output "Samsung Electric Company LF24T35 HCNR501668"
-}
-
-workspace "2" {
-    open-on-output "Acer Technologies ED340CU J0 54520961D3W01"
 }
 
 layout {
