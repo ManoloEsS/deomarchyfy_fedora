@@ -26,6 +26,8 @@ and other applications receive Omarchy's `Ctrl+Insert`, `Shift+Insert`, and
 `Ctrl+X` sequences. Noctalia owns clipboard history, including images, and
 opens it with `Super+Ctrl+V` or its bar widget.
 
+`Mod+Shift+Return` opens `zen-browser` directly.
+
 ## Hyprland Mapping
 
 | Existing behavior | Niri implementation |

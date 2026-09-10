@@ -19,3 +19,7 @@ action = "lock"
 enabled = true
 timeout = 330
 action = "screen_off"
+
+[widgets.caffeine]
+hide_when_disabled = true
+

@@ -72,6 +72,7 @@ are deliberately not listed in the script:
 | `xdg-desktop-portal-gtk` | Fedora GNOME desktop baseline; fallback portal backend |
 | `gnome-keyring` | Fedora GNOME desktop baseline; Secret portal backend |
 | `nautilus` | Fedora GNOME desktop baseline; file manager and file chooser support |
+| `xdg-utils` | Fedora desktop baseline; provides `xdg-open` for the default-browser binding |
 | `bash-completion` | Fedora Workstation shell baseline; `.bashrc` loads it when present |
 | `ca-certificates` | Fedora base trust store |
 | `curl-minimal` | Fedora base provides the `curl` command used by the font installer |

@@ -9,3 +9,5 @@ if command -v eza >/dev/null 2>&1; then
   alias ll='eza -la --git'
   alias tree='eza --tree --icons'
 fi
+
+alias win-rdp="sdl-freerdp /v:192.168.1.24 /u:labuser /dynamic-resolution +clipboard"

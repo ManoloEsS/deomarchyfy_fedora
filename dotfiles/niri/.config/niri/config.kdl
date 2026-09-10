@@ -18,7 +18,7 @@ input {
  mouse {
         // off
         // natural-scroll
-        // accel-speed 0.2
+        accel-speed 0.1 
         // accel-profile "flat"
         // scroll-method "no-scroll"
     }
@@ -39,7 +39,7 @@ input {
 
     // Focus windows and outputs automatically when moving the mouse into them.
     // Setting max-scroll-amount="0%" makes it work only on windows already fully on screen.
-    focus-follows-mouse // max-scroll-amount="0%"
+    focus-follows-mouse max-scroll-amount="0%"
 }
 
 // The Acer is the primary landscape display. The Samsung is the portrait
@@ -58,7 +58,7 @@ output "Samsung Electric Company LF24T35 HCNR501668" {
 }
 
 layout {
-    gaps 3
+    gaps 9
     center-focused-column "never"
 
     default-column-width { proportion 0.5; }
@@ -71,13 +71,13 @@ layout {
 
     focus-ring {
         width 3
-        // active-gradient from="#33ccff" to="#00ff99" angle=45
-        // inactive-color "#414868"
-        active-color "#ffc87f"
-        inactive-color "#505050"
-
-        // Color of the border around windows that request your attention.
-        urgent-color "#9b0000"
+        active-gradient from="#33ccff" to="#00ff99" angle=45
+        inactive-color "#414868"
+        // active-color "#ffc870"
+        // inactive-color "#505050"
+        //
+        // // Color of the border around windows that request your attention.
+        // urgent-color "#9b0000"
 
     }
 
@@ -89,7 +89,7 @@ layout {
 // Keep Noctalia as the only shell owner for the bar, launcher, notifications,
 // lock screen, idle behavior, wallpaper, and control center.
 spawn-at-startup "noctalia"
-spawn-at-startup "~/.config/niri/auto-column-width.py"
+// spawn-at-startup "~/.config/niri/auto-column-width.py"
 
 hotkey-overlay {
     skip-at-startup
@@ -149,8 +149,11 @@ gestures {
 binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
 
+    Mod+Ctrl+C { center-column; }
+
     // Applications and Noctalia shell controls.
     Mod+Return hotkey-overlay-title="Open a terminal" { spawn "ghostty"; }
+    Mod+Shift+Return hotkey-overlay-title="Open Zen Browser" { spawn "zen-browser"; }
     Mod+E hotkey-overlay-title="Open the file manager" { spawn "nautilus" "--new-window"; }
     Mod+Q repeat=false { close-window; }
 
@@ -284,22 +287,22 @@ binds {
     XF86AudioPause allow-when-locked=true hotkey-overlay-title="Play or pause media" { spawn-sh "noctalia msg media toggle"; }
     XF86PowerOff allow-when-locked=true hotkey-overlay-title="Open session options" { spawn-sh "noctalia msg panel-toggle session"; }
 
-    Super+Ctrl+I hotkey-overlay-title="Toggle caffeine mode" { spawn-sh "noctalia msg caffeine-toggle"; }
-    Super+Ctrl+N hotkey-overlay-title="Toggle night light" { spawn-sh "noctalia msg nightlight-toggle"; }
-    Super+Ctrl+L hotkey-overlay-title="Lock session" { spawn-sh "noctalia msg session lock"; }
+    Super+Alt+I hotkey-overlay-title="Toggle caffeine mode" { spawn-sh "noctalia msg caffeine-toggle"; }
+    Super+Alt+N hotkey-overlay-title="Toggle night light" { spawn-sh "noctalia msg nightlight-toggle"; }
+    Super+Alt+L hotkey-overlay-title="Lock session" { spawn-sh "noctalia msg session lock"; }
     Super+Shift+Space hotkey-overlay-title="Toggle bar" { spawn-sh "noctalia msg bar-toggle"; }
-    Super+Ctrl+Space hotkey-overlay-title="Open wallpaper panel" { spawn-sh "noctalia msg panel-toggle wallpaper"; }
-    Super+Ctrl+E hotkey-overlay-title="Open emoji picker" { spawn-sh "noctalia msg panel-toggle launcher /emo"; }
-    Super+Ctrl+Q hotkey-overlay-title="Open calculator" { spawn-sh "noctalia msg panel-toggle launcher /calc"; }
-    Super+Ctrl+A hotkey-overlay-title="Open audio controls" { spawn-sh "noctalia msg panel-toggle control-center audio"; }
-    Super+Ctrl+B hotkey-overlay-title="Open Bluetooth controls" { spawn-sh "noctalia msg panel-toggle control-center bluetooth"; }
-    Super+Ctrl+D hotkey-overlay-title="Open display controls" { spawn-sh "noctalia msg panel-toggle control-center monitor"; }
-    Super+Ctrl+M hotkey-overlay-title="Open media controls" { spawn-sh "noctalia msg panel-toggle control-center media"; }
-    Super+Ctrl+P hotkey-overlay-title="Open power controls" { spawn-sh "noctalia msg panel-toggle control-center power"; }
-    Super+Ctrl+T hotkey-overlay-title="Open system controls" { spawn-sh "noctalia msg panel-toggle control-center system"; }
-    Super+Ctrl+V hotkey-overlay-title="Open clipboard history" { spawn-sh "noctalia msg panel-toggle clipboard"; }
-    Super+Ctrl+W hotkey-overlay-title="Open network controls" { spawn-sh "noctalia msg panel-toggle control-center network"; }
-    Super+Ctrl+Shift+S hotkey-overlay-title="Capture screen region" { spawn-sh "noctalia msg screenshot-region"; }
+    Super+Alt+Space hotkey-overlay-title="Open wallpaper panel" { spawn-sh "noctalia msg panel-toggle wallpaper"; }
+    Super+Alt+E hotkey-overlay-title="Open emoji picker" { spawn-sh "noctalia msg panel-toggle launcher /emo"; }
+    Super+Alt+Q hotkey-overlay-title="Open calculator" { spawn-sh "noctalia msg panel-toggle launcher /calc"; }
+    Super+Alt+A hotkey-overlay-title="Open audio controls" { spawn-sh "noctalia msg panel-toggle control-center audio"; }
+    Super+Alt+B hotkey-overlay-title="Open Bluetooth controls" { spawn-sh "noctalia msg panel-toggle control-center bluetooth"; }
+    Super+Alt+D hotkey-overlay-title="Open display controls" { spawn-sh "noctalia msg panel-toggle control-center monitor"; }
+    Super+Alt+M hotkey-overlay-title="Open media controls" { spawn-sh "noctalia msg panel-toggle control-center media"; }
+    Super+Alt+P hotkey-overlay-title="Open power controls" { spawn-sh "noctalia msg panel-toggle control-center power"; }
+    Super+Alt+T hotkey-overlay-title="Open system controls" { spawn-sh "noctalia msg panel-toggle control-center system"; }
+    Super+Alt+V hotkey-overlay-title="Open clipboard history" { spawn-sh "noctalia msg panel-toggle clipboard"; }
+    Super+Alt+W hotkey-overlay-title="Open network controls" { spawn-sh "noctalia msg panel-toggle control-center network"; }
+    Super+Alt+Shift+S hotkey-overlay-title="Capture screen region" { spawn-sh "noctalia msg screenshot-region"; }
     Super+Ctrl+Comma hotkey-overlay-title="Toggle Do Not Disturb" { spawn-sh "noctalia msg notification-dnd-toggle"; }
     Super+Alt+Comma hotkey-overlay-title="Show latest notification" { spawn-sh "noctalia msg notification-invoke-latest"; }
     Super+Alt+Slash hotkey-overlay-title="Open notifications" { spawn-sh "noctalia msg panel-toggle control-center notifications"; }
