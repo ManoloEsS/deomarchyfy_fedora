@@ -12,6 +12,7 @@ session works before changing the daily session.
 
 This profile restores the reference machine. Before using it with different
 displays, update the Niri output blocks and Noctalia monitor-specific settings.
+It requires a Fedora release that provides Niri 26.04 or newer.
 
 ## 2. Get the Project
 

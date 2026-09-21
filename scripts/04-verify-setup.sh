@@ -35,6 +35,31 @@ warn_command() {
   fi
 }
 
+check_niri_version() {
+  local version major minor
+  if ! version="$(niri --version 2>/dev/null)"; then
+    printf '%s\n' 'FAIL Niri version unavailable'
+    ((failures+=1))
+    return
+  fi
+
+  version="${version#niri }"
+  if [[ ! "$version" =~ ^([0-9]+)\.([0-9]+) ]]; then
+    printf 'FAIL Niri version unrecognized: %s\n' "$version"
+    ((failures+=1))
+    return
+  fi
+
+  major=$((10#${BASH_REMATCH[1]}))
+  minor=$((10#${BASH_REMATCH[2]}))
+  if ((major > 26 || (major == 26 && minor >= 4))); then
+    printf 'PASS Niri version %-20s\n' "$version"
+  else
+    printf 'FAIL Niri version %-20s requires 26.04 or newer\n' "$version"
+    ((failures+=1))
+  fi
+}
+
 check_link() {
   local target="$1" expected="$2"
   if [[ -L "$target" ]] && [[ "$(readlink -f "$target")" == "$expected" ]]; then
@@ -128,6 +153,7 @@ check_reference_outputs() {
 printf 'Project: %s\n' "$PROJECT_DIR"
 for command_name in niri noctalia ghostty stow git nvim tmux python3 fc-match xwayland-satellite wtype; do check_command "$command_name"; done
 for command_name in starship mise jj herdr opencode; do warn_command "$command_name"; done
+check_niri_version
 
 printf '\nConfiguration\n'
 check_link "$HOME/.config/niri/config.kdl" "$PROJECT_DIR/dotfiles/niri/.config/niri/config.kdl"
