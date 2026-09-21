@@ -62,6 +62,10 @@ enable_unit() {
 ensure_unit() {
   local unit="$1"
   local enabled=0 active=0
+  if ! systemctl cat "$unit" >/dev/null 2>&1; then
+    printf 'WARN unit %s not found; leaving it unchanged\n' "$unit"
+    return
+  fi
   if systemctl is-enabled --quiet "$unit" 2>/dev/null; then enabled=1; fi
   if systemctl is-active --quiet "$unit" 2>/dev/null; then active=1; fi
   if ((enabled && active)); then
