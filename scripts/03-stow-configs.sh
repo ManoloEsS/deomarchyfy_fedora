@@ -10,6 +10,7 @@ RESTOW=0
 REPLACE_BASH=0
 REPLACE_NIRI=0
 REPLACE_NOCTALIA=0
+REPLACE_ALL=0
 PACKAGES=(bash ghostty herdr niri noctalia starship tmux)
 
 usage() {
@@ -23,6 +24,7 @@ Options:
   --replace-niri   Back up an existing regular Niri config before Stowing Niri.
   --replace-noctalia
                    Back up regular files managed by the Noctalia package.
+  --replace-all    Back up every regular file managed by the Stow packages.
   --packages LIST  Comma-separated package list.
   -h, --help       Show this help.
 EOF
@@ -35,6 +37,7 @@ while (($#)); do
     --replace-bash) REPLACE_BASH=1 ;;
     --replace-niri) REPLACE_NIRI=1 ;;
     --replace-noctalia) REPLACE_NOCTALIA=1 ;;
+    --replace-all) REPLACE_ALL=1 ;;
     --packages) shift; [[ $# -gt 0 ]] || { usage >&2; exit 2; }; IFS=',' read -r -a PACKAGES <<<"$1" ;;
     -h|--help) usage; exit 0 ;;
     *) printf 'Unknown option: %s\n' "$1" >&2; usage >&2; exit 2 ;;
@@ -75,21 +78,36 @@ backup_regular_file() {
   fi
 }
 
-if ((REPLACE_BASH)); then
+if ((REPLACE_BASH || REPLACE_ALL)); then
   for file in .bashrc .bash_profile .profile .bash_aliases .bash_functions .inputrc; do
     backup_regular_file "$file"
   done
 fi
 
-if ((REPLACE_NIRI)); then
-  backup_regular_file .config/niri/config.kdl
+if ((REPLACE_NIRI || REPLACE_ALL)); then
+  for file in \
+    .config/niri/config.kdl \
+    .config/niri/auto-column-width.py \
+    .local/bin/universal-clipboard; do
+    backup_regular_file "$file"
+  done
 fi
 
-if ((REPLACE_NOCTALIA)); then
+if ((REPLACE_NOCTALIA || REPLACE_ALL)); then
   for file in \
     .config/noctalia/config.toml \
     .config/noctalia/wallpapers/shaded.png \
     .local/state/noctalia/settings.toml; do
+    backup_regular_file "$file"
+  done
+fi
+
+if ((REPLACE_ALL)); then
+  for file in \
+    .config/ghostty/config \
+    .config/herdr/config.toml \
+    .config/starship.toml \
+    .config/tmux/tmux.conf; do
     backup_regular_file "$file"
   done
 fi

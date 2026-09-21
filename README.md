@@ -52,7 +52,7 @@ Run the scripts as the normal user from this directory:
 ```bash
 ./scripts/01-install-packages.sh
 ./scripts/02-enable-services.sh
-./scripts/03-stow-configs.sh --replace-bash --replace-niri --replace-noctalia
+./scripts/03-stow-configs.sh --replace-all
 ./scripts/04-verify-setup.sh
 ```
 

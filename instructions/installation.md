@@ -133,14 +133,14 @@ Inspect the Stow plan first:
 On a clean user account, apply all reviewed packages:
 
 ```bash
-./scripts/03-stow-configs.sh --replace-bash --replace-niri --replace-noctalia
+./scripts/03-stow-configs.sh --replace-all
 ```
 
-`--replace-bash` moves existing regular Bash files into a timestamped backup
-directory under `~/.local/state/deomarchyfy-fedora/backups/`. Likewise,
-`--replace-niri` backs up an existing regular `~/.config/niri/config.kdl`, and
-`--replace-noctalia` backs up existing regular Noctalia configuration,
-wallpaper, and settings files. Symlinks and other conflicts stop the script
+`--replace-all` moves every existing regular file managed by the Stow packages
+into a timestamped backup directory under
+`~/.local/state/deomarchyfy-fedora/backups/`. For surgical restows, the
+`--replace-bash`, `--replace-niri`, and `--replace-noctalia` flags back up
+only their package's files. Symlinks and other conflicts stop the script
 rather than overwriting user files.
 
 ## 6. Validate Before Login Selection
