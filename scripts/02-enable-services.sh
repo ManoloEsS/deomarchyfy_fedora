@@ -86,7 +86,6 @@ fi
 
 enable_unit NetworkManager.service
 enable_unit firewalld.service
-sudo_run firewall-cmd --set-default-zone=home
 enable_power_profile_backend
 enable_unit fstrim.timer
 
