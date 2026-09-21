@@ -144,9 +144,6 @@ zramctl
 rpm -q zram-generator-defaults
 ```
 
-The service script retains an explicit `--zram` option only for nonstandard
-Fedora installations where the distribution default is absent.
-
 ## Optional GNOME Service Cleanup
 
 The Fedora Workstation baseline remains unchanged by default. For a Niri and

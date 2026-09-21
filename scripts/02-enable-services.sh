@@ -2,7 +2,6 @@
 set -Eeuo pipefail
 
 DRY_RUN=0
-ENABLE_ZRAM=0
 ENABLE_TAILSCALE=0
 ENABLE_DOCKER=0
 ENABLE_SSH=0
@@ -14,7 +13,6 @@ Usage: 02-enable-services.sh [options]
 
 Options:
   --dry-run                 Print actions without changing the system.
-  --zram                    Install the reviewed zram-generator configuration.
   --tailscale               Enable tailscaled; authentication remains manual.
   --docker                  Enable Docker and add the user to its group.
   --ssh                     Enable Tailscale SSH; requires authenticated Tailscale.
@@ -26,7 +24,6 @@ EOF
 while (($#)); do
   case "$1" in
     --dry-run) DRY_RUN=1 ;;
-    --zram) ENABLE_ZRAM=1 ;;
     --tailscale) ENABLE_TAILSCALE=1 ;;
     --docker) ENABLE_DOCKER=1 ;;
     --ssh) ENABLE_SSH=1 ;;
@@ -85,20 +82,6 @@ enable_power_profile_backend() {
   done
   printf '%s\n' 'No power-profile backend found; leaving Fedora power management unchanged.'
 }
-
-if ((ENABLE_ZRAM)); then
-  tmp_file="$(mktemp)"
-  trap 'rm -f -- "$tmp_file"' EXIT
-  printf '%s\n' '[zram0]' 'zram-size = ram / 2' 'compression-algorithm = zstd' >"$tmp_file"
-  if [[ -e /etc/systemd/zram-generator.conf ]] && ! cmp -s "$tmp_file" /etc/systemd/zram-generator.conf; then
-    printf '%s\n' '/etc/systemd/zram-generator.conf already exists and differs; refusing to replace it.' >&2
-    exit 1
-  fi
-  sudo_run "$DNF" install -y zram-generator
-  if [[ ! -e /etc/systemd/zram-generator.conf ]]; then
-    sudo_run install -m 0644 "$tmp_file" /etc/systemd/zram-generator.conf
-  fi
-fi
 
 ensure_unit NetworkManager.service
 ensure_unit firewalld.service
