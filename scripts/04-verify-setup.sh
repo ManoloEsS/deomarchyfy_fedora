@@ -45,6 +45,35 @@ check_link() {
   fi
 }
 
+check_readable_file() {
+  local file="$1" label="$2"
+  if [[ -r "$file" ]]; then
+    printf 'PASS file %-29s\n' "$label"
+  else
+    printf 'FAIL file %-29s unreadable or missing: %s\n' "$label" "$file"
+    ((failures+=1))
+  fi
+}
+
+check_noctalia_config() {
+  if noctalia config validate; then
+    printf '%s\n' 'PASS Noctalia configuration valid'
+  else
+    printf '%s\n' 'FAIL Noctalia configuration invalid'
+    ((failures+=1))
+  fi
+}
+
+check_effective_wallpaper() {
+  local wallpaper
+  if wallpaper="$(noctalia msg wallpaper-get 2>/dev/null)" && [[ -r "$wallpaper" ]]; then
+    printf 'PASS wallpaper %-24s %s\n' 'effective' "$wallpaper"
+  else
+    printf '%s\n' 'FAIL wallpaper effective value is unreadable or unavailable'
+    ((failures+=1))
+  fi
+}
+
 output_block() {
   local connector="$1" line block='' in_block=0
   while IFS= read -r line; do
@@ -106,6 +135,8 @@ check_link "$HOME/.config/niri/auto-column-width.py" "$PROJECT_DIR/dotfiles/niri
 check_link "$HOME/.config/noctalia/config.toml" "$PROJECT_DIR/dotfiles/noctalia/.config/noctalia/config.toml"
 check_link "$HOME/.config/noctalia/wallpapers/shaded.png" "$PROJECT_DIR/dotfiles/noctalia/.config/noctalia/wallpapers/shaded.png"
 check_link "$HOME/.local/state/noctalia/settings.toml" "$PROJECT_DIR/dotfiles/noctalia/.local/state/noctalia/settings.toml"
+check_readable_file "$HOME/.config/noctalia/wallpapers/shaded.png" 'Noctalia wallpaper'
+check_noctalia_config
 check_link "$HOME/.config/ghostty/config" "$PROJECT_DIR/dotfiles/ghostty/.config/ghostty/config"
 check_link "$HOME/.config/tmux/tmux.conf" "$PROJECT_DIR/dotfiles/tmux/.config/tmux/tmux.conf"
 check_link "$HOME/.bashrc" "$PROJECT_DIR/dotfiles/bash/.bashrc"
@@ -141,6 +172,10 @@ fi
 
 if ((niri_session)); then
   check_reference_outputs
+  check_effective_wallpaper
+else
+  printf '%s\n' 'WARN effective Noctalia wallpaper unavailable outside a Niri session'
+  ((warnings+=1))
 fi
 
 if ((failures)); then
