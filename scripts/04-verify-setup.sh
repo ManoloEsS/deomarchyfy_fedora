@@ -10,7 +10,9 @@ if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
 Usage: 04-verify-setup.sh
 
 Read-only checks for the Fedora package, configuration, service, monitor, and
-session baseline. Run it from the target graphical session after Stow is applied.
+session baseline. Run it before the first Niri login to validate links and
+config parsers, then re-run it inside the Niri session for the monitor and
+effective-wallpaper checks.
 EOF
   exit 0
 fi

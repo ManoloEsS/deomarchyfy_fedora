@@ -146,17 +146,26 @@ rather than overwriting user files.
 ## 6. Validate Before Login Selection
 
 ```bash
-./scripts/04-verify-setup.sh
 niri validate
 noctalia config validate
+./scripts/04-verify-setup.sh
 ```
 
 Fix configuration errors before selecting Niri in GDM. The verification script
-does not enable a display manager and does not start Noctalia.
+does not enable a display manager and does not start Noctalia. Run outside a
+Niri session, expect two warnings — monitor state unavailable and effective
+Noctalia wallpaper unavailable — because those checks require the live session;
+everything else must pass.
 
 ## 7. Test Niri from GDM
 
 Log out of GNOME, select the Niri session from the GDM gear menu, and log in.
+Then re-run the verifier inside the session and expect zero warnings:
+
+```bash
+./scripts/04-verify-setup.sh
+```
+
 Confirm that:
 
 - Noctalia starts exactly once.
