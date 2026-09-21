@@ -158,7 +158,7 @@ binds {
 
     // Applications and Noctalia shell controls.
     Mod+Return hotkey-overlay-title="Open a terminal" { spawn "ghostty"; }
-    Mod+Shift+Return hotkey-overlay-title="Open default browser" { spawn "~/.local/bin/open-default-browser"; }
+    Mod+Shift+Return hotkey-overlay-title="Open Zen Browser" { spawn "zen-browser"; }
     Mod+E hotkey-overlay-title="Open the file manager" { spawn "nautilus" "--new-window"; }
     Mod+Q repeat=false { close-window; }
 

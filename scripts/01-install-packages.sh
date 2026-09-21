@@ -8,7 +8,7 @@ DRY_RUN=0
 WITH_GHOSTTY=1
 WITH_STARSHIP=0
 WITH_SYNC_TOOLS=0
-WITH_ZEN_BROWSER=0
+WITH_ZEN_BROWSER=1
 NO_UPGRADE=0
 
 readonly NERD_FONT_VERSION='v3.5.1'
@@ -25,7 +25,7 @@ Options:
   --no-ghostty     Do not enable the Ghostty COPR or install Ghostty.
   --with-starship  Enable the Starship COPR and install Starship.
   --with-sync-tools Install rsync and inotify-tools for the optional rsw helper.
-  --with-zen-browser Enable the Zen Browser COPR and install Zen Browser.
+  --no-zen-browser   Do not enable the Zen Browser COPR or install Zen Browser.
   --no-upgrade     Skip the initial dnf upgrade transaction.
   -h, --help       Show this help.
 EOF
@@ -37,7 +37,7 @@ while (($#)); do
     --no-ghostty) WITH_GHOSTTY=0 ;;
     --with-starship) WITH_STARSHIP=1 ;;
     --with-sync-tools) WITH_SYNC_TOOLS=1 ;;
-    --with-zen-browser) WITH_ZEN_BROWSER=1 ;;
+    --no-zen-browser) WITH_ZEN_BROWSER=0 ;;
     --no-upgrade) NO_UPGRADE=1 ;;
     -h|--help) usage; exit 0 ;;
     *) printf 'Unknown option: %s\n' "$1" >&2; usage >&2; exit 2 ;;

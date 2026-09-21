@@ -151,7 +151,7 @@ check_reference_outputs() {
 }
 
 printf 'Project: %s\n' "$PROJECT_DIR"
-for command_name in niri noctalia ghostty stow git nvim tmux python3 fc-match xwayland-satellite wtype; do check_command "$command_name"; done
+for command_name in niri noctalia ghostty zen-browser stow git nvim tmux python3 fc-match xwayland-satellite wtype; do check_command "$command_name"; done
 for command_name in starship mise jj herdr opencode; do warn_command "$command_name"; done
 check_niri_version
 

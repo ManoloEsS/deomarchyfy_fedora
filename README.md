@@ -50,7 +50,7 @@ dotfiles/tmux/                tmux configuration
 Run the scripts as the normal user from this directory:
 
 ```bash
-./scripts/01-install-packages.sh --with-zen-browser
+./scripts/01-install-packages.sh
 ./scripts/02-enable-services.sh
 ./scripts/03-stow-configs.sh --replace-bash --replace-niri --replace-noctalia
 ./scripts/04-verify-setup.sh
@@ -68,7 +68,7 @@ generated files remain unmanaged. The verification script is read-only.
 - Test the stock Fedora GNOME session before selecting Niri in GDM.
 - Keep a working GNOME session available until Niri and Noctalia have been
   tested.
-- Review the Ghostty and Starship COPR metadata before enabling them.
+- Review the Ghostty, Zen Browser, and Starship COPR metadata before enabling them.
 - Do not disable SELinux, firewalld, Secure Boot, or Fedora portals to work
   around an application issue.
 - Do not enable SSH or Tailscale just because their packages are installed. For

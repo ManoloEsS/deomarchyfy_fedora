@@ -19,6 +19,7 @@ Workstation desktop baseline.
 | `noctalia` | Desktop shell, lock screen, idle behavior, and controls |
 | `stow` | User configuration symlink management |
 | `ghostty` | Default terminal, from the selected Ghostty COPR |
+| `zen-browser` | Default browser, from the selected Zen Browser COPR |
 | `bat` | File and man-page previews |
 | `eza` | Directory listings |
 | `fzf` | Interactive selection |
@@ -50,7 +51,7 @@ packages installed. They are not all part of the core profile:
 | `gh` | Manual Fedora package install | GitHub CLI; not needed by the desktop setup |
 | `mise` | Manual Fedora package install | Optional development tool version manager |
 | `jj-cli` | Manual Fedora package install | Optional Jujutsu version control client |
-| `zen-browser` | `./scripts/01-install-packages.sh --with-zen-browser` | Reference browser; optional outside the reference-machine profile |
+| `zen-browser` | Installed by the core installer from the `sneexy/zen-browser` COPR; skip with `--no-zen-browser` | Browser bound to `Super+Shift+Return` |
 
 The core installer remains limited to packages required by the reviewed Niri,
 Noctalia, Ghostty, shell, and Stow configuration. The optional packages above
@@ -72,8 +73,7 @@ are deliberately not listed in the script:
 | `xdg-desktop-portal-gtk` | Fedora GNOME desktop baseline; fallback portal backend |
 | `gnome-keyring` | Fedora GNOME desktop baseline; Secret portal backend |
 | `nautilus` | Fedora GNOME desktop baseline; file manager and file chooser support |
-| `gtk3` | Fedora GNOME desktop baseline; provides `gtk-launch` for the default-browser binding |
-| `xdg-utils` | Fedora desktop baseline; provides `xdg-mime` for the default-browser binding |
+| `xdg-utils` | Fedora desktop baseline; provides `xdg-open` for the default-browser binding |
 | `bash-completion` | Fedora Workstation shell baseline; `.bashrc` loads it when present |
 | `ca-certificates` | Fedora base trust store |
 | `curl-minimal` | Fedora base provides the `curl` command used by the font installer |
@@ -197,6 +197,7 @@ session. Removing the entire GNOME desktop group is not supported.
 | Tool | Source | Notes |
 | --- | --- | --- |
 | Ghostty | COPR `scottames/ghostty` | Enabled by the package script unless `--no-ghostty` is used |
+| Zen Browser | COPR `sneexy/zen-browser` | Enabled by the package script unless `--no-zen-browser` is used |
 | Starship | COPR `atim/starship` | Optional; use `--with-starship` |
 | mise | Fedora package or upstream | Optional and not required by the base setup |
 | Jujutsu | Fedora package `jj-cli` or upstream | Optional developer tool |
@@ -209,6 +210,7 @@ official Fedora infrastructure. Review them before installation:
 ```bash
 dnf copr list
 dnf copr info scottames/ghostty
+dnf copr info sneexy/zen-browser
 dnf copr info atim/starship
 ```
 
