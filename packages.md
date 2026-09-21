@@ -117,11 +117,12 @@ The helper also uses the Fedora Workstation OpenSSH client for transport. The
 Docker adds the user to a root-equivalent group and requires a new login. It is
 not enabled by default.
 
-The service script enables Fedora's existing `NetworkManager`, `firewalld`, and
-`fstrim.timer` units. For power profiles it enables the first existing backend
-from `power-profiles-daemon.service` or `tuned-ppd.service`, and otherwise
-leaves Fedora's power management unchanged. It does not install duplicate
-copies of baseline packages.
+The service script ensures Fedora's existing `NetworkManager`, `firewalld`, and
+`fstrim.timer` units are enabled and active, skipping any that already are, so
+a stock Workstation run changes nothing there. For power profiles it ensures
+the first existing backend from `power-profiles-daemon.service` or
+`tuned-ppd.service`, and otherwise leaves Fedora's power management unchanged.
+It does not install duplicate copies of baseline packages.
 
 Noctalia uses the standard `org.freedesktop.UPower.PowerProfiles` D-Bus API.
 Both `power-profiles-daemon` and Fedora's TuneD compatibility package,

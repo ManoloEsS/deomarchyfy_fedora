@@ -59,11 +59,23 @@ enable_unit() {
   sudo_run systemctl enable --now "$unit"
 }
 
+ensure_unit() {
+  local unit="$1"
+  local enabled=0 active=0
+  if systemctl is-enabled --quiet "$unit" 2>/dev/null; then enabled=1; fi
+  if systemctl is-active --quiet "$unit" 2>/dev/null; then active=1; fi
+  if ((enabled && active)); then
+    printf 'Already enabled and active, skipping: %s\n' "$unit"
+    return
+  fi
+  enable_unit "$unit"
+}
+
 enable_power_profile_backend() {
   local unit
   for unit in power-profiles-daemon.service tuned-ppd.service; do
     if systemctl cat "$unit" >/dev/null 2>&1; then
-      enable_unit "$unit"
+      ensure_unit "$unit"
       return
     fi
   done
@@ -84,10 +96,10 @@ if ((ENABLE_ZRAM)); then
   fi
 fi
 
-enable_unit NetworkManager.service
-enable_unit firewalld.service
+ensure_unit NetworkManager.service
+ensure_unit firewalld.service
 enable_power_profile_backend
-enable_unit fstrim.timer
+ensure_unit fstrim.timer
 
 if ((ENABLE_TAILSCALE)); then
   sudo_run "$DNF" install -y tailscale
