@@ -97,6 +97,11 @@ hotkey-overlay {
 
 prefer-no-csd
 
+debug {
+    // Allow Noctalia notification actions and window activation requests.
+    honor-xdg-activation-with-invalid-serial
+}
+
 screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 
 animations {
