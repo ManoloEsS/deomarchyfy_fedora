@@ -104,6 +104,8 @@ printf '\nConfiguration\n'
 check_link "$HOME/.config/niri/config.kdl" "$PROJECT_DIR/dotfiles/niri/.config/niri/config.kdl"
 check_link "$HOME/.config/niri/auto-column-width.py" "$PROJECT_DIR/dotfiles/niri/.config/niri/auto-column-width.py"
 check_link "$HOME/.config/noctalia/config.toml" "$PROJECT_DIR/dotfiles/noctalia/.config/noctalia/config.toml"
+check_link "$HOME/.config/noctalia/wallpapers/shaded.png" "$PROJECT_DIR/dotfiles/noctalia/.config/noctalia/wallpapers/shaded.png"
+check_link "$HOME/.local/state/noctalia/settings.toml" "$PROJECT_DIR/dotfiles/noctalia/.local/state/noctalia/settings.toml"
 check_link "$HOME/.config/ghostty/config" "$PROJECT_DIR/dotfiles/ghostty/.config/ghostty/config"
 check_link "$HOME/.config/tmux/tmux.conf" "$PROJECT_DIR/dotfiles/tmux/.config/tmux/tmux.conf"
 check_link "$HOME/.bashrc" "$PROJECT_DIR/dotfiles/bash/.bashrc"

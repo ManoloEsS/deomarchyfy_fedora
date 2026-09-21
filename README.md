@@ -52,14 +52,16 @@ Run the scripts as the normal user from this directory:
 ```bash
 ./scripts/01-install-packages.sh
 ./scripts/02-enable-services.sh
-./scripts/03-stow-configs.sh --replace-bash --replace-niri
+./scripts/03-stow-configs.sh --replace-bash --replace-niri --replace-noctalia-settings
 ./scripts/04-verify-setup.sh
 ```
 
 The package script installs Fedora packages and enables the selected COPR
 repositories. The service script does not change the display manager or login
-path. The Stow script does not manage Noctalia GUI state, secrets, caches, or
-generated files. The verification script is read-only.
+path. The Noctalia Stow package contains the curated shell configuration,
+GUI-managed settings, and wallpaper. Noctalia writes GUI changes through the
+settings symlink into the repository. Runtime history, secrets, caches, and
+generated files remain unmanaged. The verification script is read-only.
 
 ## Safety Boundaries
 

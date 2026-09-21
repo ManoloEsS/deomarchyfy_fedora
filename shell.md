@@ -31,32 +31,21 @@ These controls still depend on the underlying Fedora services. Noctalia does
 not replace PipeWire, NetworkManager, BlueZ, UPower, or the active Fedora
 power-profile backend (`power-profiles-daemon` or `tuned-ppd`).
 
-## Minimal Profile
+## Managed Profile
 
-The initial configuration intentionally contains only the reviewed lock and
-idle behavior:
+The Noctalia Stow package contains the reference machine's reviewed shell
+configuration, monitor-specific bar and lock-screen layout, and wallpaper. The
+configuration was promoted from the active GUI choices with:
 
-```toml
-[shell.animation]
-enabled = false
-
-[lockscreen]
-enabled = true
-
-[idle.behavior.lock]
-enabled = true
-timeout = 300
-action = "lock"
-
-[idle.behavior.screen-off]
-enabled = true
-timeout = 330
-action = "screen_off"
+```bash
+noctalia config export merged
 ```
 
-Use Noctalia's GUI to explore widgets, themes, wallpaper, and optional
-integrations after the default runtime is working. GUI-managed state under
-`~/.local/state/noctalia/` is intentionally not managed by Stow.
+Noctalia writes later GUI changes to `~/.local/state/noctalia/settings.toml`.
+That file is linked to the Noctalia Stow package, so GUI changes appear directly
+in the repository for review. Only `settings.toml` is versioned from the state
+directory; runtime history, encrypted clipboard data, downloaded catalogs,
+plugin source caches, and internal state remain untracked.
 
 ## Avoid Duplicate Owners
 

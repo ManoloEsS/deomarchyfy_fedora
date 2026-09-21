@@ -10,8 +10,10 @@ noctalia config validate
 pgrep -af noctalia
 ```
 
-There should be one shell process. GUI-managed settings live under
-`~/.local/state/noctalia/` and are intentionally outside this repository.
+There should be one shell process. The reviewed configuration, GUI-managed
+`settings.toml`, and wallpaper are managed by the Noctalia Stow package. GUI
+changes write through the settings symlink and appear in the repository.
+Runtime history, secrets, caches, and internal state remain untracked.
 
 ## Shell and IPC
 

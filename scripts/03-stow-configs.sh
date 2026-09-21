@@ -9,6 +9,7 @@ DRY_RUN=0
 RESTOW=0
 REPLACE_BASH=0
 REPLACE_NIRI=0
+REPLACE_NOCTALIA_SETTINGS=0
 PACKAGES=(bash ghostty herdr niri noctalia starship tmux)
 
 usage() {
@@ -20,6 +21,8 @@ Options:
   --restow         Rebuild links for the selected packages.
   --replace-bash   Back up regular Bash files before Stowing the Bash package.
   --replace-niri   Back up an existing regular Niri config before Stowing Niri.
+  --replace-noctalia-settings
+                   Back up an existing regular Noctalia settings file.
   --packages LIST  Comma-separated package list.
   -h, --help       Show this help.
 EOF
@@ -31,6 +34,7 @@ while (($#)); do
     --restow) RESTOW=1 ;;
     --replace-bash) REPLACE_BASH=1 ;;
     --replace-niri) REPLACE_NIRI=1 ;;
+    --replace-noctalia-settings) REPLACE_NOCTALIA_SETTINGS=1 ;;
     --packages) shift; [[ $# -gt 0 ]] || { usage >&2; exit 2; }; IFS=',' read -r -a PACKAGES <<<"$1" ;;
     -h|--help) usage; exit 0 ;;
     *) printf 'Unknown option: %s\n' "$1" >&2; usage >&2; exit 2 ;;
@@ -79,6 +83,10 @@ fi
 
 if ((REPLACE_NIRI)); then
   backup_regular_file .config/niri/config.kdl
+fi
+
+if ((REPLACE_NOCTALIA_SETTINGS)); then
+  backup_regular_file .local/state/noctalia/settings.toml
 fi
 
 stow_args=(--dir="$DOTFILES_DIR" --target="$HOME" --no-folding)

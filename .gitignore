@@ -1,3 +1,5 @@
 # Runtime and local backup data must remain outside version control.
 # .local/
+dotfiles/noctalia/.local/state/noctalia/*
+!dotfiles/noctalia/.local/state/noctalia/settings.toml
 *.log
