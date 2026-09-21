@@ -155,7 +155,8 @@ Fix configuration errors before selecting Niri in GDM. The verification script
 does not enable a display manager and does not start Noctalia. Run outside a
 Niri session, expect two warnings — monitor state unavailable and effective
 Noctalia wallpaper unavailable — because those checks require the live session;
-everything else must pass.
+everything else must pass. If the install skipped Ghostty or Zen Browser,
+pass the matching `--no-ghostty` or `--no-zen-browser` flag to the verifier.
 
 ## 7. Test Niri from GDM
 

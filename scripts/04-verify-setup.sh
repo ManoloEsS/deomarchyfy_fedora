@@ -5,17 +5,28 @@ readonly PROJECT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 failures=0
 warnings=0
 
-if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
-  cat <<'EOF'
-Usage: 04-verify-setup.sh
+WITH_GHOSTTY=1
+WITH_ZEN_BROWSER=1
+
+for arg in "$@"; do
+  case "$arg" in
+    --no-ghostty) WITH_GHOSTTY=0 ;;
+    --no-zen-browser) WITH_ZEN_BROWSER=0 ;;
+    --help|-h)
+      cat <<'EOF'
+Usage: 04-verify-setup.sh [--no-ghostty] [--no-zen-browser]
 
 Read-only checks for the Fedora package, configuration, service, monitor, and
 session baseline. Run it before the first Niri login to validate links and
 config parsers, then re-run it inside the Niri session for the monitor and
-effective-wallpaper checks.
+effective-wallpaper checks. Pass the same --no-* flags used during
+installation so skipped packages are not reported as failures.
 EOF
-  exit 0
-fi
+      exit 0
+      ;;
+    *) printf 'Unknown option: %s\n' "$arg" >&2; exit 2 ;;
+  esac
+done
 
 check_command() {
   local command_name="$1"
@@ -153,7 +164,9 @@ check_reference_outputs() {
 }
 
 printf 'Project: %s\n' "$PROJECT_DIR"
-for command_name in niri noctalia ghostty zen-browser stow git nvim tmux python3 fc-match xwayland-satellite wtype; do check_command "$command_name"; done
+for command_name in niri noctalia stow git nvim tmux python3 fc-match xwayland-satellite wtype; do check_command "$command_name"; done
+if ((WITH_GHOSTTY)); then check_command ghostty; else printf 'SKIP command ghostty not requested\n'; fi
+if ((WITH_ZEN_BROWSER)); then check_command zen-browser; else printf 'SKIP command zen-browser not requested\n'; fi
 for command_name in starship mise jj herdr opencode; do warn_command "$command_name"; done
 check_niri_version
 
