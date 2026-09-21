@@ -43,8 +43,12 @@ Optional developer tools are separate from the desktop core:
 
 ```bash
 ./scripts/01-install-packages.sh --with-starship
-sudo dnf install gh mise jj-cli
+sudo dnf install gh jj-cli
 ```
+
+Install `mise` using its current upstream instructions when it is not
+available as a Fedora package on the target release. Do not pipe an
+unreviewed installer into a root shell.
 
 The optional `rsw` live-directory synchronization helper requires extra tools:
 

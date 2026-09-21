@@ -9,6 +9,7 @@ WITH_GHOSTTY=1
 WITH_STARSHIP=0
 WITH_SYNC_TOOLS=0
 WITH_ZEN_BROWSER=1
+WITH_FONT=1
 NO_UPGRADE=0
 
 readonly NERD_FONT_VERSION='v3.5.1'
@@ -26,6 +27,7 @@ Options:
   --with-starship  Enable the Starship COPR and install Starship.
   --with-sync-tools Install rsync and inotify-tools for the optional rsw helper.
   --no-zen-browser   Do not enable the Zen Browser COPR or install Zen Browser.
+  --no-font          Skip the JetBrainsMono Nerd Font installation.
   --no-upgrade     Skip the initial dnf upgrade transaction.
   -h, --help       Show this help.
 EOF
@@ -38,6 +40,7 @@ while (($#)); do
     --with-starship) WITH_STARSHIP=1 ;;
     --with-sync-tools) WITH_SYNC_TOOLS=1 ;;
     --no-zen-browser) WITH_ZEN_BROWSER=0 ;;
+    --no-font) WITH_FONT=0 ;;
     --no-upgrade) NO_UPGRADE=1 ;;
     -h|--help) usage; exit 0 ;;
     *) printf 'Unknown option: %s\n' "$1" >&2; usage >&2; exit 2 ;;
@@ -61,6 +64,8 @@ ADDITIONAL_PACKAGES=(
   git neovim tmux python3 fontconfig
   # Required by the Niri universal-clipboard helper.
   fzf bat eza zoxide wtype
+  # Required by the JetBrainsMono Nerd Font installer below.
+  curl-minimal tar xz
 )
 
 run_dnf() {
@@ -151,4 +156,8 @@ fi
 
 printf 'Installing Fedora packages from %s:\n' "$PROJECT_DIR"
 run_dnf install -y "${ADDITIONAL_PACKAGES[@]}"
-install_jetbrains_nerd_font
+if ((WITH_FONT)); then
+  install_jetbrains_nerd_font
+else
+  printf '%s\n' 'Skipping JetBrainsMono Nerd Font installation.'
+fi
