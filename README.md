@@ -50,7 +50,7 @@ dotfiles/tmux/                tmux configuration
 Run the scripts as the normal user from this directory:
 
 ```bash
-./scripts/01-install-packages.sh
+./scripts/01-install-packages.sh --with-zen-browser
 ./scripts/02-enable-services.sh
 ./scripts/03-stow-configs.sh --replace-bash --replace-niri --replace-noctalia
 ./scripts/04-verify-setup.sh

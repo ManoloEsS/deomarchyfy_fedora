@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+desktop_file="$(xdg-mime query default x-scheme-handler/https)"
+if [[ -z "$desktop_file" ]]; then
+  printf '%s\n' 'No default HTTPS browser is configured.' >&2
+  exit 1
+fi
+
+exec gtk-launch "$desktop_file"

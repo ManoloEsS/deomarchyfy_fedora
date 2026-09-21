@@ -29,12 +29,14 @@ Update Fedora and install the core profile:
 
 ```bash
 sudo dnf upgrade --refresh
-./scripts/01-install-packages.sh
+./scripts/01-install-packages.sh --with-zen-browser
 ```
 
-Use `--dry-run` first to inspect the transaction. The default enables the
-Ghostty COPR because Ghostty is the selected terminal. Skip it with
-`--no-ghostty`, or add Starship's COPR explicitly with `--with-starship`.
+Use `--dry-run` first to inspect the transaction. The reference-machine command
+also installs Zen Browser, which is configured as the default browser. The
+default profile enables the Ghostty COPR because Ghostty is the selected
+terminal. Skip it with `--no-ghostty`, or add Starship's COPR explicitly with
+`--with-starship`.
 
 Optional developer tools are separate from the desktop core:
 

@@ -50,7 +50,7 @@ packages installed. They are not all part of the core profile:
 | `gh` | Manual Fedora package install | GitHub CLI; not needed by the desktop setup |
 | `mise` | Manual Fedora package install | Optional development tool version manager |
 | `jj-cli` | Manual Fedora package install | Optional Jujutsu version control client |
-| `zen-browser` | Manual package install | Optional browser; not a session dependency |
+| `zen-browser` | `./scripts/01-install-packages.sh --with-zen-browser` | Reference browser; optional outside the reference-machine profile |
 
 The core installer remains limited to packages required by the reviewed Niri,
 Noctalia, Ghostty, shell, and Stow configuration. The optional packages above
@@ -72,7 +72,8 @@ are deliberately not listed in the script:
 | `xdg-desktop-portal-gtk` | Fedora GNOME desktop baseline; fallback portal backend |
 | `gnome-keyring` | Fedora GNOME desktop baseline; Secret portal backend |
 | `nautilus` | Fedora GNOME desktop baseline; file manager and file chooser support |
-| `xdg-utils` | Fedora desktop baseline; provides `xdg-open` for the default-browser binding |
+| `gtk3` | Fedora GNOME desktop baseline; provides `gtk-launch` for the default-browser binding |
+| `xdg-utils` | Fedora desktop baseline; provides `xdg-mime` for the default-browser binding |
 | `bash-completion` | Fedora Workstation shell baseline; `.bashrc` loads it when present |
 | `ca-certificates` | Fedora base trust store |
 | `curl-minimal` | Fedora base provides the `curl` command used by the font installer |
