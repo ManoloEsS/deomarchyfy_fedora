@@ -14,11 +14,11 @@ and logical positions. The checked-in monitor rules use the manufacturer/model
 names from the current Hyprland setup and should be treated as hardware
 defaults, not universal identifiers.
 
-The configuration starts a small IPC watcher that expands a lone tiling column
-to the available width and sets two tiling columns to `50%` each. It ignores
-floating windows and leaves layouts with three or more columns unchanged. This
-behavior is automated because Niri's built-in width settings do not resize
-existing columns when the column count changes.
+The repository includes an optional IPC watcher that expands a lone tiling
+column to the available width and sets two tiling columns to `50%` each. It is
+currently disabled; the reviewed profile uses Niri's explicit width presets
+instead. To enable the watcher, uncomment its `spawn-at-startup` line in
+`config.kdl`.
 
 The Niri binds provide Omarchy-style universal clipboard shortcuts through
 `wtype`. Browser windows receive the browser-standard `Ctrl+C/V/X`; terminals
