@@ -51,9 +51,9 @@ should not be replaced solely to provide this optional control.
 
 ## Lock and Idle
 
-1. Press `Super+Ctrl+L` and authenticate.
-2. Wait past the five-minute lock timeout, then authenticate.
-3. Wait past the screen-off timeout and wake the display.
+1. Press `Super+Alt+L` and authenticate.
+2. Wait past the configured lock timeout (500 seconds), then authenticate.
+3. Wait past the configured screen-off timeout (660 seconds) and wake the display.
 4. Test suspend and resume from the Noctalia session controls.
 5. Confirm that the screen is locked after suspend.
 
