@@ -10,6 +10,9 @@ specific storage, encryption, firmware, or GPU requirement. Keep Secure Boot
 and SELinux enabled. Create a normal user and confirm that the stock GNOME
 session works before changing the daily session.
 
+This profile restores the reference machine. Before using it with different
+displays, update the Niri output blocks and Noctalia monitor-specific settings.
+
 ## 2. Get the Project
 
 ```bash
