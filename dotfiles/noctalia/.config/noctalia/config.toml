@@ -185,19 +185,19 @@ community_palette = "Tokyo Night Storm"
 source = "community"
 
 [wallpaper]
-directory = "/home/manoloess/.config/noctalia/wallpapers"
+directory = "~/.config/noctalia/wallpapers"
 
     [wallpaper.default]
-    path = "/home/manoloess/.config/noctalia/wallpapers/shaded.png"
+    path = "~/.config/noctalia/wallpapers/shaded.png"
 
     [wallpaper.last]
-    path = "/home/manoloess/.config/noctalia/wallpapers/shaded.png"
+    path = "~/.config/noctalia/wallpapers/shaded.png"
 
     [wallpaper.monitors.DP-1]
-    path = "/home/manoloess/.config/noctalia/wallpapers/shaded.png"
+    path = "~/.config/noctalia/wallpapers/shaded.png"
 
     [wallpaper.monitors.HDMI-A-1]
-    path = "/home/manoloess/.config/noctalia/wallpapers/shaded.png"
+    path = "~/.config/noctalia/wallpapers/shaded.png"
 
 [widget.caffeine]
 color = "on_surface"
